@@ -138,7 +138,7 @@ let generated = {};
 function generatePreview() {
     const data = Object.fromEntries(new FormData(document.getElementById("toForm")));
 
-    fetch("YOUR_WEBAPP_URL", {
+    fetch("https://script.google.com/macros/s/AKfycbyOn0QSkSKJAk8bnwb83AeoMfp4L4yJVv9zZgmI3cgmjA9TNSf27L8rzw_ISXgZFT-4Cg/exec", {
         method: "POST",
         mode: "cors",
         body: JSON.stringify({ action: "preview", data })
@@ -155,7 +155,7 @@ function generatePreview() {
 function saveRecord() {
     const formData = Object.fromEntries(new FormData(document.getElementById("toForm")));
 
-    fetch("YOUR_WEBAPP_URL", {
+    fetch("https://script.google.com/macros/s/AKfycbyOn0QSkSKJAk8bnwb83AeoMfp4L4yJVv9zZgmI3cgmjA9TNSf27L8rzw_ISXgZFT-4Cg/exec", {
         method: "POST",
         mode: "cors",
         body: JSON.stringify({ 
