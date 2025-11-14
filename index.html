@@ -1,41 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>DAR Travel Order</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container">
-        <h1>DAR Travel Order Form</h1>
-        <form id="travelOrderForm">
-            <label>Name:</label>
-            <input type="text" id="name" required>
-            
-            <label>Destination:</label>
-            <input type="text" id="destination" required>
-            
-            <label>Purpose:</label>
-            <input type="text" id="purpose" required>
-            
-            <label>Start Date:</label>
-            <input type="date" id="startDate" required>
-            
-            <label>End Date:</label>
-            <input type="date" id="endDate" required>
-            
-            <button type="button" onclick="previewForm()">Preview</button>
-            <button type="submit">Submit</button>
-        </form>
+<meta charset="UTF-8">
+<title>DAR Travel Order Generator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <div id="previewModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closePreview()">&times;</span>
-                <h2>Preview Travel Order</h2>
-                <p id="previewText"></p>
-            </div>
-        </div>
-    </div>
-    <script src="script.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    body {
+        background: #f5f6f7;
+        font-family: "Segoe UI", sans-serif;
+    }
+    .header {
+        background: linear-gradient(90deg, #006241, #0a8a53, #FFC107);
+        padding: 20px;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    .header img {
+        height: 55px;
+    }
+    .card {
+        border-radius: 15px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    .btn-dar {
+        background: #006241;
+        color: white;
+        border-radius: 8px;
+    }
+    .btn-dar:hover {
+        background: #004c33;
+    }
+    .preview-box {
+        height: 600px;
+        width: 100%;
+        border-radius: 10px;
+        border: 2px solid #ccc;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Department_of_Agrarian_Reform_%28DAR%29.svg/512px-Department_of_Agrarian_Reform_%28DAR%29.svg.png">
+    <h2 class="m-0 fw-bold">Department of Agrarian Reform<br>Travel Order Generator</h2>
+</div>
+
+<div class="container mt-4">
+
+<div class="card p-4">
+
+<h4 class="fw-bold mb-3">Travel Order Form</h4>
+
+<form id="toForm">
+
+<div class="row g-3">
+
+<div class="col-md-6">
+    <label class="form-label">Name</label>
+    <input class="form-control" name="name" required>
+</div>
+
+<div class="col-md-6">
+    <label class="form-label">Designation</label>
+    <input class="form-control" name="designation" required>
+</div>
+
+<div class="col-md-6">
+    <label class="form-label">Office</label>
+    <input class="form-control" name="office" required>
+</div>
+
+<div class="col-md-6">
+    <label class="form-label">Destination</label>
+    <input class="form-control" name="destination" required>
+</div>
+
+<div class="col-md-12">
+    <label class="form-label">Purpose of Travel</label>
+    <textarea class="form-control" name="purpose" required></textarea>
+</div>
+
+<div class="col-md-4">
+    <label class="form-label">Date of Travel</label>
+    <input type="date" class="form-control" name="date" required>
+</div>
+
+<div class="col-md-4">
+    <label class="form-label">Mode of Transportation</label>
+    <select class="form-select" name="transport">
+        <option>Office Vehicle</option>
+        <option>Public Utility Vehicle</option>
+        <option>Private Vehicle</option>
+    </select>
+</div>
+
+<div class="col-md-4">
+    <label class="form-label">Fund Source</label>
+    <input class="form-control" name="fund">
+</div>
+
+<div class="col-md-12">
+    <label class="form-label">Remarks</label>
+    <textarea class="form-control" name="remarks"></textarea>
+</div>
+
+</div>
+
+<button type="button" class="btn btn-dar mt-3" onclick="generatePreview()">
+    Generate Preview
+</button>
+
+</form>
+
+</div>
+
+<div id="previewSection" class="mt-4 d-none">
+    <h4 class="fw-bold">Preview</h4>
+    <iframe id="pdfFrame" class="preview-box"></iframe>
+
+    <button class="btn btn-success mt-3" onclick="saveRecord()">
+        Save Travel Order
+    </button>
+</div>
+
+</div>
+
+<script>
+let generated = {};
+
+// 1) Generate Preview
+function generatePreview() {
+    const data = Object.fromEntries(new FormData(document.getElementById("toForm")));
+
+    fetch("YOUR_WEBAPP_URL", {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify({ action: "preview", data })
+    })
+    .then(res => res.json())
+    .then(res => {
+        generated = res;
+        document.getElementById("pdfFrame").src = res.pdfUrl;
+        document.getElementById("previewSection").classList.remove("d-none");
+    });
+}
+
+// 2) Save to Google Sheet
+function saveRecord() {
+    const formData = Object.fromEntries(new FormData(document.getElementById("toForm")));
+
+    fetch("YOUR_WEBAPP_URL", {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify({ 
+            action: "save", 
+            data: { ...generated, ...formData } 
+        })
+    })
+    .then(res => res.json())
+    .then(() => alert("Travel Order saved successfully!"));
+}
+</script>
+
 </body>
 </html>
